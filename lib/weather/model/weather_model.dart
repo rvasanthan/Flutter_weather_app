@@ -1,10 +1,23 @@
-class WeatherModel {
-  final String temperature;
-  final String city;
-  final String desc;
+import 'package:flutter_application_1/weather/model/pollen_model.dart';
+import 'package:flutter_application_1/weather/model/visual_cross_model.dart';
 
-  WeatherModel.fromMap(Map<String, dynamic> json) 
-    : temperature = json['main']['temp'].toString(),
-      city = json['name'],
-      desc = json['weather'][0]['description'];
+class WeatherModel {
+  late VisualCrossModel visualCrossModel;
+  late PollenInfoModel pollenInfoModel;
+
+  WeatherModel.getInstanceWithoutParams();
+  WeatherModel.getInstance(this.visualCrossModel, this.pollenInfoModel);
+
+  void setPollenInfoModel(PollenInfoModel pollenInfoModel) {
+    this.pollenInfoModel = pollenInfoModel;
+  }
+
+  void setVisualCrossMode(VisualCrossModel visualCrossModel) {
+    this.visualCrossModel = visualCrossModel;
+  }
+
+  VisualCrossModel getVisualCrossModel() {
+    return visualCrossModel;
+  }
+
 }

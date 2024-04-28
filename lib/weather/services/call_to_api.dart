@@ -1,15 +1,15 @@
 import 'dart:developer';
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+import 'package:flutter_application_1/weather/model/pollen_model.dart';
+import 'package:flutter_application_1/weather/model/weather_model.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart' as http;
+import 'package:geolocator/geolocator.dart';import 'package:http/http.dart' as http;
 import 'package:flutter_application_1/weather/constants/apikey.dart';
 import 'package:flutter_application_1/weather/model/visual_cross_model.dart';
 
 class WeatherApi {
-  Future<VisualCrossModel> getWeatherByName(bool current, String locationName) async {
+  Future<WeatherModel> getWeatherByName(bool current, String locationName) async {
     try {
 
       Position currentPosition = await getCurrentPosition();
@@ -30,8 +30,8 @@ class WeatherApi {
       log("LocationName:$locationName");
       var visualCrossUrl = Uri.https('weather.visualcrossing.com', '/VisualCrossingWebServices/rest/services/timeline/$location',
           {"unitGroup": "metric", "key": visualCrossApiKey, "contentType": "json"});
-      VisualCrossModel model = VisualCrossModel();
       log(visualCrossUrl.toString());
+      WeatherModel weatherModel = WeatherModel.getInstanceWithoutParams();
       final http.Response response = await http.get(visualCrossUrl);
       if (response.statusCode == 200) {
         final Map<String, dynamic> decodedJson = json.decode(response.body);
@@ -39,14 +39,19 @@ class WeatherApi {
             {"key":"AIzaSyCfx8yOCRrSn7TSP1uchs2fO_yos9Pn7oc",  "location.longitude":decodedJson['latitude'].toString(), "location.latitude":decodedJson['latitude'].toString(), "days":"5"});
           log(pollenApiUrl.toString());
         final http.Response pollenResponse = await http.get(pollenApiUrl);
+         VisualCrossModel visualCrossModel = VisualCrossModel.fromMap(decodedJson);
+         weatherModel.setVisualCrossMode(visualCrossModel);
         if(response.statusCode == 200) {
           final Map<String, dynamic> decodedPollenJson = json.decode(pollenResponse.body);
-          model = VisualCrossModel.fromMap(decodedJson, decodedPollenJson);
+          PollenInfoModel pollenInfoModel = PollenInfoModel.fromMap(decodedPollenJson);
+          weatherModel.setPollenInfoModel(pollenInfoModel);
         }
         if(current) {
-          model.city = city;
+          //visualCrossModel.city = city;
+          weatherModel.getVisualCrossModel().city = city;
         }
-        return model;
+        
+        return weatherModel;
       } else {
         throw Exception('Failed to load weather data');
       }

@@ -14,12 +14,8 @@ class VisualCrossModel {
   String longitude;
   String sunrise;
   String sunset;
-  List<dynamic> currentPollen;
 
-  
-
-
-  VisualCrossModel.fromMap(Map<String, dynamic> weatherInfo, Map<String, dynamic> pollenInfo) 
+  VisualCrossModel.fromMap(Map<String, dynamic> weatherInfo) 
     : temperature = weatherInfo['currentConditions']['temp'].toString(),
       city = weatherInfo['address'],
       desc = weatherInfo['description'],
@@ -32,7 +28,6 @@ class VisualCrossModel {
       latitude = weatherInfo['latitude'].toString(),
       longitude = weatherInfo['longitude'].toString(),
       sunrise = weatherInfo['currentConditions']['sunrise'].toString(),
-      sunset = weatherInfo['currentConditions']['sunset'].toString(),
-      currentPollen = pollenInfo['dailyInfo'][0]['pollenTypeInfo']
+      sunset = weatherInfo['currentConditions']['sunset'].toString()
       ;
 }

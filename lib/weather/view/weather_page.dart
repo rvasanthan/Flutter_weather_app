@@ -2,16 +2,19 @@ import 'dart:developer';
 import 'dart:convert';
 import 'dart:math' hide log;
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/weather/model/weather_model.dart';
+import 'package:flutter_application_1/weather/view/pollen_information_card.dart';
 import 'package:flutter_application_1/weather/view/sun_information_card.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_application_1/weather/view/seven_day_forecast.dart';
 import 'package:flutter_application_1/weather/view/today_hourly_forecast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_application_1/weather/services/call_to_api.dart';
-import 'package:flutter_application_1/weather/model/visual_cross_model.dart';
 import 'package:flutter_application_1/weather/services/places_api_client.dart';
 import 'package:flutter_application_1/weather/constants/apikey.dart';
+import 'package:cupertino_icons/cupertino_icons.dart';
 
 
 class WeatherPage extends StatefulWidget {
@@ -21,7 +24,7 @@ class WeatherPage extends StatefulWidget {
 }
 
 class _WeatherPageState extends State<WeatherPage> {
-  Future<VisualCrossModel> getData(bool isCurrentCity, String cityName) async {
+  Future<WeatherModel> getData(bool isCurrentCity, String cityName) async {
     return await WeatherApi().getWeatherByName(isCurrentCity, cityName);
   }
 
@@ -30,7 +33,7 @@ class _WeatherPageState extends State<WeatherPage> {
   }
 
   final TextEditingController _searchController = TextEditingController();
-  Future<VisualCrossModel>? _myData;
+  Future<WeatherModel>? _myData;
   List<String> _predictions = [];
   Map<String, String> _predictionsLocationKeyMap = {};
   int itemCount = 0;
@@ -76,7 +79,7 @@ class _WeatherPageState extends State<WeatherPage> {
               // if data has no errors
             } else if (snapshot.hasData) {
               // Extracting data from snapshot object
-              final data = snapshot.data as VisualCrossModel;
+              final data = snapshot.data as WeatherModel;
               Size size = MediaQuery.of(context).size;
               return Container(
                 padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -133,6 +136,7 @@ class _WeatherPageState extends State<WeatherPage> {
                                           iconColor: Colors.white,
                                           suffixIcon: IconButton(
                                             icon: const Icon(Icons.clear),
+                                            //icon: const Icon(CupertinoIcons.tree),
                                             color: Colors.white,
                                             onPressed: () {
                                               _searchController.clear();
@@ -181,7 +185,7 @@ class _WeatherPageState extends State<WeatherPage> {
                                 ),
                                 child: Align(
                                   child: Text(
-                                    data.city,
+                                    data.getVisualCrossModel().city,
                                     textAlign: TextAlign.center,
                                     style: GoogleFonts.questrial(
                                       color: Colors.white,
@@ -197,7 +201,7 @@ class _WeatherPageState extends State<WeatherPage> {
                                 ),
                                 child: Align(
                                   child: Text(
-                                    '${data.temperature}˚C', //curent temperature
+                                    '${data.getVisualCrossModel().temperature}˚C', //curent temperature
                                     style: GoogleFonts.questrial(
                                       color: Colors.white,
                                       fontSize: size.height * 0.13,
@@ -220,7 +224,7 @@ class _WeatherPageState extends State<WeatherPage> {
                                 child: Align(
                                   alignment: Alignment.topCenter,
                                   child: Text(
-                                    data.desc, // weather
+                                    data.getVisualCrossModel().desc, // weather
                                     textAlign: TextAlign.center,
                                     style: GoogleFonts.questrial(
                                       color: Colors.white,
@@ -240,13 +244,13 @@ class _WeatherPageState extends State<WeatherPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      '${data.minimumTemp}˚C', // min temperature
+                                      '${data.getVisualCrossModel().minimumTemp}˚C', // min temperature
                                       style: GoogleFonts.questrial(
-                                        color: data.minimumTemp <= 0
+                                        color: data.getVisualCrossModel().minimumTemp <= 0
                                             ? Colors.white
-                                            : data.minimumTemp > 0 && data.minimumTemp <= 15
+                                            : data.getVisualCrossModel().minimumTemp > 0 && data.getVisualCrossModel().minimumTemp <= 15
                                                 ? const Color.fromARGB(255, 224, 227, 243)
-                                                : data.minimumTemp > 15 && data.minimumTemp < 30
+                                                : data.getVisualCrossModel().minimumTemp > 15 && data.getVisualCrossModel().minimumTemp < 30
                                                     ? const Color.fromARGB(255, 241, 214, 81)
                                                     : Colors.pink,
                                         fontSize: size.height * 0.03,
@@ -255,21 +259,17 @@ class _WeatherPageState extends State<WeatherPage> {
                                     Text(
                                       ' / ',
                                       style: GoogleFonts.questrial(
-                                        /*color: isDarkMode
-                                            ? Colors.white54
-                                            : Colors.black54,
-                                        fontSize: size.height * 0.03, */
                                         color: Colors.white
                                       ),
                                     ),
                                     Text(
-                                      '${data.maximumTemp}˚C', //max temperature
+                                      '${data.getVisualCrossModel().maximumTemp}˚C', //max temperature
                                       style: GoogleFonts.questrial(
-                                        color: data.maximumTemp <= 0
+                                        color: data.getVisualCrossModel().maximumTemp <= 0
                                             ? Colors.white
-                                            : data.maximumTemp > 0 && data.maximumTemp <= 15
+                                            : data.getVisualCrossModel().maximumTemp > 0 && data.getVisualCrossModel().maximumTemp <= 15
                                                 ? const Color.fromARGB(255, 228, 230, 242)
-                                                : data.maximumTemp > 15 && data.maximumTemp < 30
+                                                : data.getVisualCrossModel().maximumTemp > 15 && data.getVisualCrossModel().maximumTemp < 30
                                                     ? const Color.fromARGB(255, 241, 214, 81)
                                                     : Colors.pink,
                                         fontSize: size.height * 0.03,
@@ -278,9 +278,10 @@ class _WeatherPageState extends State<WeatherPage> {
                                   ],
                                 ),
                               ),
-                              HourlyForecastCard(data),
-                              DaysForecastCard(data, 7),
-                              SunInformationCard(data),
+                              HourlyForecastCard(data.getVisualCrossModel()),
+                              DaysForecastCard(data.getVisualCrossModel(), 7),
+                              SunInformationCard(data.getVisualCrossModel()),
+                              PollenInformationCard(data.pollenInfoModel),
                             ],
                          )
                       )

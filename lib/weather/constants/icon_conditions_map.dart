@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 const Map<String, IconData> iconConditionsMap = {
@@ -9,5 +11,7 @@ const Map<String, IconData> iconConditionsMap = {
   "cloudy" : WeatherIcons.cloudy,
   "rain" : WeatherIcons.rain,
   "snow" : WeatherIcons.snow,
-  "fog" : WeatherIcons.fog
+  "fog" : WeatherIcons.fog,
+  "Tree": CupertinoIcons.tree,
+  "Grass": IconData(0xf7be, fontFamily: 'MaterialIcons')
 };

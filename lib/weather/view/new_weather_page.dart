@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/weather/model/weather_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_application_1/weather/model/visual_cross_model.dart';
@@ -13,7 +14,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  Future<VisualCrossModel> getData(bool isCurrentCity, String cityName) async {
+  Future<WeatherModel> getData(bool isCurrentCity, String cityName) async {
     return await WeatherApi().getWeatherByName(isCurrentCity, cityName);
   }
 
@@ -59,7 +60,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             Align(
                               child: Text(
-                                'Weather App', //TODO: change app name
+                                'Weather Guru', //TODO: change app name
                                 style: GoogleFonts.questrial(
                                   color: isDarkMode
                                       ? Colors.white
